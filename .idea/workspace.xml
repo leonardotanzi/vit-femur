@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c0133fe2-f1f5-4ea5-9a27-19da6d5192fa" name="Default Changelist" comment="" />
+    <list default="true" id="c0133fe2-f1f5-4ea5-9a27-19da6d5192fa" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CNN.py" beforeDir="false" afterPath="$PROJECT_DIR$/CNN.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Clustering.py" beforeDir="false" afterPath="$PROJECT_DIR$/Clustering.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ExtractVectorForCluster.py" beforeDir="false" afterPath="$PROJECT_DIR$/ExtractVectorForCluster.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test.py" beforeDir="false" afterPath="$PROJECT_DIR$/Test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrainViT_finetune.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrainViT_finetune.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -14,7 +22,11 @@
       </list>
     </option>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="ProjectId" id="1tIN1vNGeVWsqZ3PjVVFyFtctt7" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showExcludedFiles" value="true" />
@@ -22,11 +34,12 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/TrainViT_finetune.py" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
     <property name="two.files.diff.last.used.file" value="$PROJECT_DIR$/TrainViT_finetune.py" />
   </component>
-  <component name="RunManager" selected="Python.TrainViT_finetune">
+  <component name="RunManager" selected="Python.Clustering">
     <configuration name="CNN" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Code" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -69,7 +82,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="TrainViT" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="ExtractVectorForCluster" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Code" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -81,7 +94,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/TrainViT.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/ExtractVectorForCluster.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -90,7 +103,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="TrainViT_finetune" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="ExtractVectorFromCNN" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Code" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -102,7 +115,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/TrainViT_finetune.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/ExtractVectorFromCNN.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -111,7 +124,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="kfold_cross" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="Test" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Code" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -123,7 +136,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/kfold_cross.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Test.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -134,11 +147,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.TrainViT_finetune" />
         <item itemvalue="Python.Clustering" />
+        <item itemvalue="Python.ExtractVectorForCluster" />
+        <item itemvalue="Python.ExtractVectorFromCNN" />
         <item itemvalue="Python.CNN" />
-        <item itemvalue="Python.TrainViT" />
-        <item itemvalue="Python.kfold_cross" />
+        <item itemvalue="Python.Test" />
       </list>
     </recent_temporary>
   </component>
@@ -171,45 +184,45 @@
     </state>
     <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1623347481526" />
     <state x="987" y="370" key="FileChooserDialogImpl/2560.0.2560.1400/0.0.2560.1400@0.0.2560.1400" timestamp="1624263999257" />
-    <state width="2539" height="272" key="GridCell.Tab.0.bottom" timestamp="1624273360192">
-      <screen x="0" y="0" width="2560" height="1400" />
-    </state>
-    <state width="1899" height="272" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1623355186276" />
-    <state width="2539" height="272" key="GridCell.Tab.0.bottom/2560.0.2560.1400/0.0.2560.1400@0.0.2560.1400" timestamp="1624273360192" />
-    <state width="2539" height="272" key="GridCell.Tab.0.center" timestamp="1624273360192">
-      <screen x="0" y="0" width="2560" height="1400" />
-    </state>
-    <state width="1899" height="272" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1623355186276" />
-    <state width="2539" height="272" key="GridCell.Tab.0.center/2560.0.2560.1400/0.0.2560.1400@0.0.2560.1400" timestamp="1624273360192" />
-    <state width="2539" height="272" key="GridCell.Tab.0.left" timestamp="1624273360192">
-      <screen x="0" y="0" width="2560" height="1400" />
-    </state>
-    <state width="1899" height="272" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1623355186276" />
-    <state width="2539" height="272" key="GridCell.Tab.0.left/2560.0.2560.1400/0.0.2560.1400@0.0.2560.1400" timestamp="1624273360192" />
-    <state width="2539" height="272" key="GridCell.Tab.0.right" timestamp="1624273360192">
-      <screen x="0" y="0" width="2560" height="1400" />
-    </state>
-    <state width="1899" height="272" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1623355186276" />
-    <state width="2539" height="272" key="GridCell.Tab.0.right/2560.0.2560.1400/0.0.2560.1400@0.0.2560.1400" timestamp="1624273360192" />
-    <state width="1899" height="348" key="GridCell.Tab.1.bottom" timestamp="1623240099040">
+    <state width="1899" height="273" key="GridCell.Tab.0.bottom" timestamp="1624465130863">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="348" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1623240099040" />
+    <state width="1899" height="273" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1624465130863" />
+    <state width="2539" height="272" key="GridCell.Tab.0.bottom/2560.0.2560.1400/0.0.2560.1400@0.0.2560.1400" timestamp="1624281620613" />
+    <state width="1899" height="273" key="GridCell.Tab.0.center" timestamp="1624465130863">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1899" height="273" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1624465130863" />
+    <state width="2539" height="272" key="GridCell.Tab.0.center/2560.0.2560.1400/0.0.2560.1400@0.0.2560.1400" timestamp="1624281620613" />
+    <state width="1899" height="273" key="GridCell.Tab.0.left" timestamp="1624465130863">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1899" height="273" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1624465130863" />
+    <state width="2539" height="272" key="GridCell.Tab.0.left/2560.0.2560.1400/0.0.2560.1400@0.0.2560.1400" timestamp="1624281620613" />
+    <state width="1899" height="273" key="GridCell.Tab.0.right" timestamp="1624465130863">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1899" height="273" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1624465130863" />
+    <state width="2539" height="272" key="GridCell.Tab.0.right/2560.0.2560.1400/0.0.2560.1400@0.0.2560.1400" timestamp="1624281620613" />
+    <state width="1899" height="348" key="GridCell.Tab.1.bottom" timestamp="1624465130847">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1899" height="348" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1624465130847" />
     <state width="2539" height="492" key="GridCell.Tab.1.bottom/2560.0.2560.1400/0.0.2560.1400@0.0.2560.1400" timestamp="1623163869824" />
-    <state width="1899" height="348" key="GridCell.Tab.1.center" timestamp="1623240099040">
+    <state width="1899" height="348" key="GridCell.Tab.1.center" timestamp="1624465130847">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="348" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1623240099040" />
+    <state width="1899" height="348" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1624465130847" />
     <state width="2539" height="492" key="GridCell.Tab.1.center/2560.0.2560.1400/0.0.2560.1400@0.0.2560.1400" timestamp="1623163869823" />
-    <state width="1899" height="348" key="GridCell.Tab.1.left" timestamp="1623240099040">
+    <state width="1899" height="348" key="GridCell.Tab.1.left" timestamp="1624465130847">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="348" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1623240099040" />
+    <state width="1899" height="348" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1624465130847" />
     <state width="2539" height="492" key="GridCell.Tab.1.left/2560.0.2560.1400/0.0.2560.1400@0.0.2560.1400" timestamp="1623163869823" />
-    <state width="1899" height="348" key="GridCell.Tab.1.right" timestamp="1623240099040">
+    <state width="1899" height="348" key="GridCell.Tab.1.right" timestamp="1624465130847">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="348" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1623240099040" />
+    <state width="1899" height="348" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1624465130847" />
     <state width="2539" height="492" key="GridCell.Tab.1.right/2560.0.2560.1400/0.0.2560.1400@0.0.2560.1400" timestamp="1623163869824" />
     <state x="461" y="162" key="SettingsEditor" timestamp="1622453390125">
       <screen x="0" y="0" width="1920" height="1040" />
@@ -234,11 +247,6 @@
           <option name="timeStamp" value="7" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/TrainViT_finetune.py</url>
-          <line>228</line>
-          <option name="timeStamp" value="8" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/TrainViT.py</url>
           <line>113</line>
           <option name="timeStamp" value="9" />
@@ -247,6 +255,16 @@
           <url>file://$PROJECT_DIR$/CNN.py</url>
           <line>75</line>
           <option name="timeStamp" value="11" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Test.py</url>
+          <line>94</line>
+          <option name="timeStamp" value="27" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/ExtractVectorFromCNN.py</url>
+          <line>43</line>
+          <option name="timeStamp" value="28" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

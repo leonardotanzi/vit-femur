@@ -20,7 +20,7 @@ if __name__ == "__main__":
     classes_list = ["A1", "A2", "A3", "B1", "B2", "B3", "Unbroken"]
     # classes_list = ["A", "B", "Unbroken"]
 
-    model_name = "7classes_cnn"
+    model_name = "7classes_cnn_1024"
 
     IMAGE_SIZE = 224
     BATCH_SIZE = 64
@@ -64,7 +64,7 @@ if __name__ == "__main__":
     optimizer = tfa.optimizers.RectifiedAdam(learning_rate=learning_rate)
 
     model = ResNet50(include_top=False, input_shape=(IMAGE_SIZE, IMAGE_SIZE, 3), weights="imagenet", pooling="avg")
-    out = Dense(4096, activation="relu")(model.output)
+    out = Dense(1024, activation="relu")(model.output)
     out = BatchNormalization()(out)
     out = Dropout(0.5)(out)
     out = Dense(len(classes_list))(out)
@@ -116,7 +116,7 @@ if __name__ == "__main__":
                   epochs=EPOCHS,
                   callbacks=callbacks)
 
-        model.save(model_name + ".h5")
+        model.save(model_name + ".hdf5")
 
     print(model.evaluate_generator(test_gen))
     print(model.evaluate_generator(valid_gen))

@@ -85,9 +85,9 @@ if __name__ == "__main__":
 
     IMAGE_SIZE = 224
     BATCH_SIZE = 16
-    EPOCHS = 20
-    visualize_map = False
-    load = False
+    EPOCHS = 40
+    visualize_map = True
+    load = True
 
     train_path = 'D:\\Drive\\PelvisDicom\\FinalDataset\\Dataset\\train\\'
     test_path = 'D:\\Drive\\PelvisDicom\\FinalDataset\\Dataset\\test\\'
@@ -95,7 +95,7 @@ if __name__ == "__main__":
     classes_list = ["A1", "A2", "A3", "B1", "B2", "B3", "Unbroken"]
     # classes_list = ["A", "B", "Unbroken"]
 
-    model_name = "7classes_l16-evenbiggerdense"
+    model_name = "..\\Models\\ViT-supervised\\7classes_l16-evenbiggerdense"
 
     datagen = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1./255,
                                                               validation_split=0.15)
@@ -128,18 +128,6 @@ if __name__ == "__main__":
                                             shuffle=False,
                                             class_mode='categorical',
                                             target_size=(IMAGE_SIZE, IMAGE_SIZE))
-
-    # images = [train_gen[0][0][i] for i in range(16)]
-    # fig, axes = plt.subplots(3, 5, figsize = (10, 10))
-    #
-    # axes = axes.flatten()
-    #
-    # for img, ax in zip(images, axes):
-    #     ax.imshow(img.reshape(IMAGE_SIZE, IMAGE_SIZE, 3))
-    #     ax.axis('off')
-    #
-    # plt.tight_layout()
-    # plt.show()
 
     vit_model = vit.vit_l16(
             image_size=IMAGE_SIZE,
@@ -179,7 +167,7 @@ if __name__ == "__main__":
 
     reduce_lr = tf.keras.callbacks.ReduceLROnPlateau(monitor='val_accuracy',
                                                      factor=0.2,
-                                                     patience=2,
+                                                     patience=4,
                                                      verbose=1,
                                                      min_delta=1e-4,
                                                      min_lr=1e-6,
@@ -187,7 +175,7 @@ if __name__ == "__main__":
 
     earlystopping = tf.keras.callbacks.EarlyStopping(monitor='val_accuracy',
                                                      min_delta=1e-4,
-                                                     patience=10,
+                                                     patience=20,
                                                      mode='max',
                                                      restore_best_weights=True,
                                                      verbose=1)
@@ -211,20 +199,7 @@ if __name__ == "__main__":
 
         model.save(model_name + ".hdf5")
 
-    if visualize_map:
-        x = valid_gen.next()
-        image = x[0]
-
-        attention_map = visualize.attention_map(model=vit_model, image=image)
-
-        # Plot results
-        fig, (ax1, ax2) = plt.subplots(ncols=2)
-        ax1.axis('off')
-        ax2.axis('off')
-        ax1.set_title('Original')
-        ax2.set_title('Attention Map')
-        _ = ax1.imshow(image)
-        _ = ax2.imshow(attention_map)
+    model.summary()
 
     print(model.evaluate_generator(test_gen))
     print(model.evaluate_generator(valid_gen))
@@ -237,6 +212,7 @@ if __name__ == "__main__":
     print(confusionmatrix)
     plt.figure(figsize=(16, 16))
     sns.heatmap(confusionmatrix, cmap='Blues', annot=True, cbar=True)
+    plt.show()
 
     print(classification_report(true_classes, predicted_classes))
 

@@ -72,6 +72,7 @@ def autoencoder(dims, act='relu', init='glorot_uniform'):
     return Model(inputs=input_img, outputs=decoded, name='AE'), Model(inputs=input_img, outputs=encoded, name='encoder')
 
 
+
 class ClusteringLayer(Layer):
     """
     Clustering layer converts input sample (feature) to soft label.
@@ -142,17 +143,17 @@ def target_distribution(q):
 
 if __name__ == "__main__":
 
-    pretrain_autoencoder = False
+    pretrain_autoencoder = True
     train_cluster = True
 
-    X_dict = np.load("X.npz")
+    X_dict = np.load("..\\NumpyData\\X_bigger.npz")
     X = X_dict['arr_0']
-    y_dict = np.load("y.npz")
+    y_dict = np.load("..\\NumpyData\\y_bigger.npz")
     y = y_dict['arr_0']
 
-    X_dict_test = np.load("X_test.npz")
+    X_dict_test = np.load("..\\NumpyData\\X_bigger_test.npz")
     X_test = X_dict_test['arr_0']
-    y_dict_test = np.load("y_test.npz")
+    y_dict_test = np.load("..\\NumpyData\\y_bigger_test.npz")
     y_test = y_dict_test['arr_0']
 
     n_clusters = len(np.unique(y))
@@ -164,7 +165,7 @@ if __name__ == "__main__":
     # Generalization of Xavier inizialization
     init = VarianceScaling(scale=1. / 3., mode='fan_in', distribution='uniform')
     pretrain_optimizer = SGD(lr=0.01, momentum=0.9)
-    pretrain_epochs = 300
+    pretrain_epochs = 10
     batch_size = 128
 
     autoencoder, encoder = autoencoder(dims, init=init)
@@ -175,11 +176,11 @@ if __name__ == "__main__":
 
     if pretrain_autoencoder:
         autoencoder.fit(X, X, batch_size=batch_size, epochs=pretrain_epochs)  # , callbacks=cb)
-        autoencoder.save("ae_weights.h5")
-        encoder.save("e_weights.h5")
+        # autoencoder.save("..\\Models\\ViT-unsupervised\\ae_weights_cnn.h5")
+        # encoder.save("..\\Models\\ViT-unsupervised\\e_weights_cnn.h5")
     else:
-        autoencoder = load_model("ae_weights.h5")
-        encoder = load_model("e_weights.h5")
+        autoencoder = load_model("..\\Models\\ViT-unsupervised\\ae_weights_cnn.h5")
+        encoder = load_model("..\\Models\\ViT-unsupervised\\e_weights_cnn.h5")
 
     clustering_layer = ClusteringLayer(n_clusters, name='clustering')(encoder.output)
     model = Model(inputs=encoder.input, outputs=clustering_layer)
@@ -213,7 +214,7 @@ if __name__ == "__main__":
                     acc_v = np.round(acc_cluster(y, y_pred), 5)
                     nmi_v = np.round(nmi(y, y_pred), 5)
                     ari_v = np.round(ari(y, y_pred), 5)
-                    loss = np.round(loss, 5)
+                    loss = np.round(loss, 10)
                     print('Iter %d: acc = %.5f, nmi = %.5f, ari = %.5f' % (ite, acc_v, nmi_v, ari_v), ' ; loss=', loss)
 
                 # check stop criterion - model convergence
@@ -227,10 +228,10 @@ if __name__ == "__main__":
             loss = model.train_on_batch(x=X[idx], y=p[idx])
             index = index + 1 if (index + 1) * batch_size <= X.shape[0] else 0
 
-        model.save("DEC_model_final.h5")
+        # model.save("..\\Models\\ViT-unsupervised\\DEC_model_final_cnn.h5")
 
     else:
-        model = load_model("DEC_model_final.h5")
+        model = load_model("..\\Models\\ViT-unsupervised\\DEC_model_final_cnn.h5")
 
     # Eval.
     q = model.predict(X_test, verbose=0)

@@ -30,14 +30,20 @@ if __name__ == "__main__":
     model = tf.keras.Sequential([
         vit_model,
         tf.keras.layers.Flatten(),
+        tf.keras.layers.Dense(4096, activation=tf.nn.gelu),
         tf.keras.layers.BatchNormalization(),
-        tf.keras.layers.Dense(11, activation=tf.nn.gelu),
-        tf.keras.layers.BatchNormalization(),
+        tf.keras.layers.Dropout(0.5),
         tf.keras.layers.Dense(len(classes_list), 'softmax')
+        # vit_model,
+        # tf.keras.layers.Flatten(),
+        # tf.keras.layers.BatchNormalization(),
+        # tf.keras.layers.Dense(11, activation=tf.nn.gelu),
+        # tf.keras.layers.BatchNormalization(),
+        # tf.keras.layers.Dense(len(classes_list), 'softmax')
     ],
         name='vision_transformer')
 
-    model.load_weights("7classes_l16.h5")
+    model.load_weights("..\\Models\\ViT-supervised\\7classes_l16-evenbiggerdense.hdf5")
 
     model.summary()
 
@@ -60,8 +66,8 @@ if __name__ == "__main__":
 
     intermediate_layer_model.summary()
 
-    np.savez_compressed("X_test.npz", out_intermediate)
-    np.savez_compressed("Y_test.npz", true_value)
+    np.savez_compressed("..\\NumpyData\\X_bigger_test.npz", out_intermediate)
+    np.savez_compressed("..\\NumpyData\\Y_bigger_test.npz", true_value)
 
     if one_image:
         test_img = 'D:\\Drive\\PelvisDicom\\FinalDataset\\Dataset\\test\\A\\Pelvis00020_left_0.99.png'
@@ -74,6 +80,6 @@ if __name__ == "__main__":
         image /= 255.0
         X = np.expand_dims(image, axis=0)
 
-        X /= 255.0
+        # X /= 255.0
 
         inter_output = intermediate_layer_model.predict(X)
