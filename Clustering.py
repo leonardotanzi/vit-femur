@@ -3,7 +3,7 @@ from time import time
 import numpy as np
 import tensorflow.keras.backend as K
 from tensorflow.keras.layers import Layer, InputSpec
-from tensorflow.keras.layers import Dense, Input
+from tensorflow.keras.layers import Dense, Input, Conv2D, MaxPooling2D, UpSampling2D, Flatten, Reshape
 from tensorflow.keras.models import Model, load_model
 from tensorflow.keras.optimizers import SGD
 from tensorflow.keras import callbacks
@@ -15,7 +15,7 @@ from sklearn.metrics import confusion_matrix, classification_report
 import seaborn as sns
 import sklearn.metrics
 import matplotlib.pyplot as plt
-
+import tensorflow as tf
 
 def acc_cluster(y_true, y_pred):
     """
@@ -71,6 +71,32 @@ def autoencoder(dims, act='relu', init='glorot_uniform'):
     decoded = x
     return Model(inputs=input_img, outputs=decoded, name='AE'), Model(inputs=input_img, outputs=encoded, name='encoder')
 
+
+def conv_autoencoder(act='relu', init='glorot_uniform'):
+
+    input_img = Input(shape=(224, 224, 3))
+
+    x = Conv2D(16, (3, 3), activation='relu', padding='same')(input_img)
+    x = MaxPooling2D((2, 2), padding='same')(x)
+    x = Conv2D(8, (3, 3), activation='relu', padding='same')(x)
+    x = MaxPooling2D((2, 2), padding='same')(x)
+    x = Conv2D(8, (3, 3), activation='relu', padding='same')(x)
+    x = MaxPooling2D((2, 2), padding='same')(x)
+    x = Flatten()(x)
+    encoded = Dense(10)(x)
+
+    # at this point the representation is (4, 4, 8) i.e. 128-dimensional
+    x = Dense(28*28*8)(encoded)
+    x = Reshape((28, 28, 8))(x)
+    x = Conv2D(8, (3, 3), activation='relu', padding='same')(x)
+    x = UpSampling2D((2, 2))(x)
+    x = Conv2D(8, (3, 3), activation='relu', padding='same')(x)
+    x = UpSampling2D((2, 2))(x)
+    x = Conv2D(16, (3, 3), activation='relu', padding='same')(x)
+    x = UpSampling2D((2, 2))(x)
+    decoded = Conv2D(3, (3, 3), activation='sigmoid', padding='same')(x)
+
+    return Model(inputs=input_img, outputs=decoded, name='AE'), Model(inputs=input_img, outputs=encoded, name='encoder')
 
 
 class ClusteringLayer(Layer):
@@ -146,41 +172,47 @@ if __name__ == "__main__":
     pretrain_autoencoder = True
     train_cluster = True
 
-    X_dict = np.load("..\\NumpyData\\X_bigger.npz")
+    X_dict = np.load("..\\NumpyData\\X_convae.npz")
     X = X_dict['arr_0']
-    y_dict = np.load("..\\NumpyData\\y_bigger.npz")
+    y_dict = np.load("..\\NumpyData\\y_convae.npz")
     y = y_dict['arr_0']
 
-    X_dict_test = np.load("..\\NumpyData\\X_bigger_test.npz")
+    X_dict_test = np.load("..\\NumpyData\\X_test_convae.npz")
     X_test = X_dict_test['arr_0']
-    y_dict_test = np.load("..\\NumpyData\\y_bigger_test.npz")
+    y_dict_test = np.load("..\\NumpyData\\y_test_convae.npz")
     y_test = y_dict_test['arr_0']
 
     n_clusters = len(np.unique(y))
-    kmeans = KMeans(n_clusters=n_clusters, n_init=20, n_jobs=4)
-    y_pred_kmeans = kmeans.fit_predict(X_test)
-    print("Kmeans accuracy:{}".format(acc_cluster(y_test, y_pred_kmeans)))
+    # kmeans = KMeans(n_clusters=n_clusters, n_init=20, n_jobs=4)
+    # y_pred_kmeans = kmeans.fit_predict(X_test)
+    # print("Kmeans accuracy:{}".format(acc_cluster(y_test, y_pred_kmeans)))
 
     dims = [X.shape[-1], 500, 500, 2000, 10]
     # Generalization of Xavier inizialization
     init = VarianceScaling(scale=1. / 3., mode='fan_in', distribution='uniform')
     pretrain_optimizer = SGD(lr=0.01, momentum=0.9)
-    pretrain_epochs = 10
+    pretrain_epochs = 100
     batch_size = 128
+
+    conv_ae, conv_e = conv_autoencoder()
+    conv_ae.summary()
+    conv_e.summary()
 
     autoencoder, encoder = autoencoder(dims, init=init)
 
-    autoencoder.summary()
+    autoencoder, encoder = conv_autoencoder()
 
+    autoencoder.summary()
+    encoder.summary()
     autoencoder.compile(optimizer=pretrain_optimizer, loss='mse')
 
     if pretrain_autoencoder:
         autoencoder.fit(X, X, batch_size=batch_size, epochs=pretrain_epochs)  # , callbacks=cb)
-        # autoencoder.save("..\\Models\\ViT-unsupervised\\ae_weights_cnn.h5")
-        # encoder.save("..\\Models\\ViT-unsupervised\\e_weights_cnn.h5")
+        autoencoder.save("..\\Models\\ViT-unsupervised\\ae_weights_cnn.h5")
+        encoder.save("..\\Models\\ViT-unsupervised\\e_weights_cnn.h5")
     else:
-        autoencoder = load_model("..\\Models\\ViT-unsupervised\\ae_weights_cnn.h5")
-        encoder = load_model("..\\Models\\ViT-unsupervised\\e_weights_cnn.h5")
+        autoencoder = load_model("..\\Models\\ViT-unsupervised\\conv_ae_weights.h5")
+        encoder = load_model("..\\Models\\ViT-unsupervised\\conv_e_weights_cnn.h5")
 
     clustering_layer = ClusteringLayer(n_clusters, name='clustering')(encoder.output)
     model = Model(inputs=encoder.input, outputs=clustering_layer)
@@ -231,7 +263,7 @@ if __name__ == "__main__":
         # model.save("..\\Models\\ViT-unsupervised\\DEC_model_final_cnn.h5")
 
     else:
-        model = load_model("..\\Models\\ViT-unsupervised\\DEC_model_final_cnn.h5")
+        model = load_model("..\\Models\\ViT-unsupervised\\conv_DEC_model_final.h5")
 
     # Eval.
     q = model.predict(X_test, verbose=0)

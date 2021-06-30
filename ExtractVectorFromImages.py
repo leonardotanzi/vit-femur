@@ -13,13 +13,7 @@ if __name__ == "__main__":
     BATCH_SIZE = 64
     EPOCHS = 20
 
-    model = load_model("7classes_cnn_1024.h5")
-
-    layer_name = "dense"
-    intermediate_layer_model = Model(inputs=model.input, outputs=model.get_layer(layer_name).output)
-
-    datagen = tf.keras.preprocessing.image.ImageDataGenerator(validation_split=0.15,
-                                                              preprocessing_function=preprocess_input)
+    datagen = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1./255)
 
     train_gen = datagen.flow_from_directory(directory=test_path,
                                             classes=classes_list,
@@ -30,10 +24,20 @@ if __name__ == "__main__":
                                             class_mode='categorical',
                                             target_size=(IMAGE_SIZE, IMAGE_SIZE))
 
-    out_intermediate = intermediate_layer_model.predict_generator(train_gen)
     true_value = train_gen.classes
 
-    intermediate_layer_model.summary()
+    batch_index = 0
 
-    np.savez_compressed("..\\NumpyData\\X_test_cnn.npz", out_intermediate)
-    np.savez_compressed("..\\NumpyData\\y_test_cnn.npz", true_value)
+    i = 0
+    while batch_index <= train_gen.batch_index:
+        data = train_gen.next()
+        if i == 0:
+            data_array = data[0]
+        else:
+            data_array = np.concatenate((data_array, data[0]), axis=0)
+        batch_index = batch_index + 1
+        i += 1
+    # now, data_array is the numeric data of whole images
+
+    np.savez_compressed("..\\NumpyData\\X_test_convae.npz", data_array)
+    np.savez_compressed("..\\NumpyData\\y_test_convae.npz", true_value)

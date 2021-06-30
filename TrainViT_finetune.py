@@ -86,8 +86,8 @@ if __name__ == "__main__":
     IMAGE_SIZE = 224
     BATCH_SIZE = 16
     EPOCHS = 40
-    visualize_map = True
-    load = True
+    visualize_map = False
+    load = False
 
     train_path = 'D:\\Drive\\PelvisDicom\\FinalDataset\\Dataset\\train\\'
     test_path = 'D:\\Drive\\PelvisDicom\\FinalDataset\\Dataset\\test\\'
@@ -95,7 +95,7 @@ if __name__ == "__main__":
     classes_list = ["A1", "A2", "A3", "B1", "B2", "B3", "Unbroken"]
     # classes_list = ["A", "B", "Unbroken"]
 
-    model_name = "..\\Models\\ViT-supervised\\7classes_l16-evenbiggerdense"
+    model_name = "..\\Models\\ViT-supervised\\7classes_l16-doubledense"
 
     datagen = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1./255,
                                                               validation_split=0.15)
@@ -147,8 +147,9 @@ if __name__ == "__main__":
             tf.keras.layers.Dense(4096, activation=tf.nn.gelu),
             tf.keras.layers.BatchNormalization(),
             tf.keras.layers.Dropout(0.5),
+
             tf.keras.layers.Dense(len(classes_list), 'softmax')
-            ],
+                ],
         name='vision_transformer')
 
     if load:
@@ -180,7 +181,7 @@ if __name__ == "__main__":
                                                      restore_best_weights=True,
                                                      verbose=1)
 
-    checkpointer = tf.keras.callbacks.ModelCheckpoint(filepath="./best_{}.hdf5".format(model_name),
+    checkpointer = tf.keras.callbacks.ModelCheckpoint(filepath="{}_best.hdf5".format(model_name),
                                                       monitor="val_accuracy",
                                                       verbose=1,
                                                       save_best_only=True,

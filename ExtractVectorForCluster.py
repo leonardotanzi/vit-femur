@@ -12,7 +12,7 @@ if __name__ == "__main__":
     BATCH_SIZE = 16
     EPOCHS = 20
 
-    one_image = False
+    one_image = True
 
     classes_list = ["A1", "A2", "A3", "B1", "B2", "B3", "Unbroken"]
     train_path = "D:\\Drive\\PelvisDicom\\FinalDataset\\Dataset\\test\\"
