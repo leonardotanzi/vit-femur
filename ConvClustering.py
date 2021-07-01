@@ -37,35 +37,30 @@ def acc_cluster(y_true, y_pred):
     return s * 1.0 / y_pred.size
 
 
-def autoencoder(dims, act='relu', init='glorot_uniform'):
-    """
-    Fully connected auto-encoder model, symmetric.
-    Arguments:
-        dims: list of number of units in each layer of encoder. dims[0] is input dim, dims[-1] is units in hidden layer.
-            The decoder is symmetric with encoder. So number of layers of the auto-encoder is 2*len(dims)-1
-        act: activation, not applied to Input, Hidden and Output layers
-    return:
-        (ae_model, encoder_model), Model of autoencoder and model of encoder
-    """
-    n_stacks = len(dims) - 1
-    # input
-    input_img = Input(shape=(dims[0],), name='input')
-    x = input_img
-    # internal layers in encoder
-    for i in range(n_stacks-1):
-        x = Dense(dims[i + 1], activation=act, kernel_initializer=init, name='encoder_%d' % i)(x)
+def conv_autoencoder(act='relu', init='glorot_uniform'):
 
-    # hidden layer
-    encoded = Dense(dims[-1], kernel_initializer=init, name='encoder_%d' % (n_stacks - 1))(x)  # hidden layer, features are extracted from here
+    input_img = Input(shape=(224, 224, 3))
 
-    x = encoded
-    # internal layers in decoder
-    for i in range(n_stacks-1, 0, -1):
-        x = Dense(dims[i], activation=act, kernel_initializer=init, name='decoder_%d' % i)(x)
+    x = Conv2D(16, (3, 3), activation='relu', padding='same')(input_img)
+    x = MaxPooling2D((2, 2), padding='same')(x)
+    x = Conv2D(8, (3, 3), activation='relu', padding='same')(x)
+    x = MaxPooling2D((2, 2), padding='same')(x)
+    x = Conv2D(8, (3, 3), activation='relu', padding='same')(x)
+    x = MaxPooling2D((2, 2), padding='same')(x)
+    x = Flatten()(x)
+    encoded = Dense(10, activation='relu', name='encoded')(x)
 
-    # output
-    x = Dense(dims[0], kernel_initializer=init, name='decoder_0')(x)
-    decoded = x
+    # at this point the representation is (4, 4, 8) i.e. 128-dimensional
+    x = Dense(28*28*8)(encoded)
+    x = Reshape((28, 28, 8))(x)
+    x = Conv2D(8, (3, 3), activation='relu', padding='same')(x)
+    x = UpSampling2D((2, 2))(x)
+    x = Conv2D(8, (3, 3), activation='relu', padding='same')(x)
+    x = UpSampling2D((2, 2))(x)
+    x = Conv2D(16, (3, 3), activation='relu', padding='same')(x)
+    x = UpSampling2D((2, 2))(x)
+    decoded = Conv2D(3, (3, 3), activation='sigmoid', padding='same')(x)
+
     return Model(inputs=input_img, outputs=decoded, name='AE'), Model(inputs=input_img, outputs=encoded, name='encoder')
 
 
@@ -137,81 +132,52 @@ def target_distribution(q):
     return (weight.T / weight.sum(1)).T
 
 
-def from7to3classes(y):
-    for i in range(len(y)):
-        if y[i] == 1 or y[i] == 2:
-            y[i] = 0
-        elif y[i] == 3 or y[i] == 4 or y[i] == 5:
-            y[i] = 1
-        elif y[i] == 6:
-            y[i] = 2
-    return y
-
-
-def from7to2classes(y):
-    for i in range(len(y)):
-        if y[i] == 1 or y[i] == 2 or y[i] == 3 or y[i] == 4 or y[i] == 5:
-            y[i] = 0
-        elif y[i] == 6:
-            y[i] = 1
-    return y
-
-
 if __name__ == "__main__":
 
     pretrain_autoencoder = True
     train_cluster = True
 
-    X_dict = np.load("..\\NumpyData\\X.npz")
+    X_dict = np.load("..\\NumpyData\\X_convae.npz")
     X = X_dict['arr_0']
-    y_dict = np.load("..\\NumpyData\\y.npz")
+    y_dict = np.load("..\\NumpyData\\y_convae.npz")
     y = y_dict['arr_0']
 
-    X_dict_test = np.load("..\\NumpyData\\X_test.npz")
+    X_dict_test = np.load("..\\NumpyData\\X_test_convae.npz")
     X_test = X_dict_test['arr_0']
-    y_dict_test = np.load("..\\NumpyData\\y_test.npz")
+    y_dict_test = np.load("..\\NumpyData\\y_test_convae.npz")
     y_test = y_dict_test['arr_0']
 
-    y = from7to3classes(y)
-    y_test = from7to3classes(y_test)
-
     n_clusters = len(np.unique(y))
-    kmeans = KMeans(n_clusters=n_clusters, n_init=20, n_jobs=4)
-    y_pred_kmeans = kmeans.fit_predict(X_test)
-    print("Kmeans accuracy:{}".format(acc_cluster(y_test, y_pred_kmeans)))
 
     dims = [X.shape[-1], 500, 500, 2000, 10]
     # Generalization of Xavier inizialization
     init = VarianceScaling(scale=1. / 3., mode='fan_in', distribution='uniform')
-    pretrain_optimizer = SGD(lr=0.01, momentum=0.9)
-    pretrain_epochs = 200
+    pretrain_epochs = 2
     batch_size = 128
 
-    autoencoder, encoder = autoencoder(dims, init=init)
+    autoencoder, encoder = conv_autoencoder()
 
     autoencoder.summary()
     encoder.summary()
-    autoencoder.compile(optimizer=pretrain_optimizer, loss='mse')
+    autoencoder.compile(optimizer='adadelta', loss='mse')
 
     if pretrain_autoencoder:
         autoencoder.fit(X, X, batch_size=batch_size, epochs=pretrain_epochs)  # , callbacks=cb)
-        autoencoder.save("..\\Models\\ViT-unsupervised\\ae_weights_3class.h5")
-        encoder.save("..\\Models\\ViT-unsupervised\\e_weights_3class.h5")
+        autoencoder.save("..\\Models\\ViT-unsupervised\\conv_ae_weights.h5")
+        encoder.save("..\\Models\\ViT-unsupervised\\conv_e_weights.h5")
     else:
-        autoencoder = load_model("..\\Models\\ViT-unsupervised\\ae_weights.h5")
-        encoder = load_model("..\\Models\\ViT-unsupervised\\e_weights_cnn.h5")
+        autoencoder = load_model("..\\Models\\ViT-unsupervised\\conv_ae_weights.h5")
+        encoder = load_model("..\\Models\\ViT-unsupervised\\conv_e_weights_cnn.h5")
 
     clustering_layer = ClusteringLayer(n_clusters, name='clustering')(encoder.output)
     model = Model(inputs=encoder.input, outputs=clustering_layer)
+    model.compile(optimizer='adam', loss='kld')
+
     # inizializza i centri del cluster a quelli del kmeans.
-    kmeans = KMeans(n_clusters=n_clusters, init='k-means++', n_init=20)
+    kmeans = KMeans(n_clusters=n_clusters, n_init=20)
     y_pred = kmeans.fit_predict(encoder.predict(X))
-
     y_pred_last = np.copy(y_pred)
-    model.summary()
     model.get_layer(name='clustering').set_weights([kmeans.cluster_centers_])
-
-    model.compile(optimizer=SGD(0.01, 0.9), loss='kld')
 
     if train_cluster:
         loss = 0
@@ -250,10 +216,10 @@ if __name__ == "__main__":
             loss = model.train_on_batch(x=X[idx], y=p[idx])
             index = index + 1 if (index + 1) * batch_size <= X.shape[0] else 0
 
-        # model.save("..\\Models\\ViT-unsupervised\\DEC_model_final.h5")
+        model.save("..\\Models\\ViT-unsupervised\\conv_DEC_model_final_cnn.h5")
 
     else:
-        model = load_model("..\\Models\\ViT-unsupervised\\DEC_model_final_3class.h5")
+        model = load_model("..\\Models\\ViT-unsupervised\\conv_DEC_model_final.h5")
 
     # Eval.
     q = model.predict(X_test, verbose=0)
@@ -265,7 +231,7 @@ if __name__ == "__main__":
         acc_v = np.round(acc_cluster(y_test, y_pred), 5)
         nmi_v = np.round(nmi(y_test, y_pred), 5)
         ari_v = np.round(ari(y_test, y_pred), 5)
-        loss = np.round(loss, 5)
+        loss = np.round(loss, 10)
         print('Acc = %.5f, nmi = %.5f, ari = %.5f' % (acc_v, nmi_v, ari_v), ' ; loss=', loss)
 
     sns.set(font_scale=3)
@@ -277,10 +243,4 @@ if __name__ == "__main__":
     plt.title("Confusion matrix", fontsize=30)
     plt.ylabel('True label', fontsize=25)
     plt.xlabel('Clustering label', fontsize=25)
-    plt.show()
-
-    x_test_encoded = encoder.predict(X_test, batch_size=batch_size)
-    plt.figure(figsize=(10, 10))
-    plt.scatter(x_test_encoded[:, 0], x_test_encoded[:, 1], c=y_test)
-    plt.colorbar()
     plt.show()
