@@ -17,8 +17,8 @@ if __name__ == "__main__":
 
     seed_everything()
 
-    visualize_map = True
-    test_overall = False
+    visualize_map = False
+    test_overall = True
 
     shuffle = False
     if visualize_map:
@@ -27,13 +27,13 @@ if __name__ == "__main__":
     IMAGE_SIZE = 224
     BATCH_SIZE = 16
 
-    test_path = 'D:\\Drive\\PelvisDicom\\FinalDataset\\Dataset\\test\\'
-    model_name = "..\\Models\\ViT-supervised\\7classes_l16-evenbiggerdense"
+    test_path = 'D:\\Drive\\PelvisDicom\\FinalDataset\\Dataset\\Test\\'
+    model_name = "D:\\7classes_l16-evenbiggerdense-oversampling-7classes-08" #"..\\Models\\ViT-supervised\\7classes_l16-evenbiggerdense"
 
     classes_list = ["A1", "A2", "A3", "B1", "B2", "B3", "Unbroken"]
 
     datagen = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1./255,
-                                                              validation_split=0.15)
+                                                              validation_split=0)
 
     test_gen = datagen.flow_from_directory(directory=test_path,
                                            classes=classes_list,
@@ -76,7 +76,6 @@ if __name__ == "__main__":
                   loss=tf.keras.losses.CategoricalCrossentropy(label_smoothing=0.2),
                   metrics=['accuracy'])
 
-
     if visualize_map:
         x = test_gen.next()
         for i in range(test_gen.batch_size):
@@ -95,14 +94,15 @@ if __name__ == "__main__":
             attention_map = visualize.attention_map(model=model.get_layer("vit-l16"), image=image_map)
 
             # Plot results
-            cv2.namedWindow('Original', cv2.WINDOW_NORMAL)
-            cv2.resizeWindow('Original', 400, 400)
-            cv2.namedWindow('Attention', cv2.WINDOW_NORMAL)
-            cv2.resizeWindow('Attention', 400, 400)
-            cv2.imshow('Original', image_map)
-            print("Original {}, Predicted {}".format(label, label_pred))
-            cv2.imshow("Attention", attention_map)
-            cv2.waitKey()
+            if label == "B3":
+                cv2.namedWindow('Original', cv2.WINDOW_NORMAL)
+                cv2.resizeWindow('Original', 400, 400)
+                cv2.namedWindow('Attention', cv2.WINDOW_NORMAL)
+                cv2.resizeWindow('Attention', 400, 400)
+                cv2.imshow('Original', image_map)
+                print("Original {}, Predicted {}".format(label, label_pred))
+                cv2.imshow("Attention", attention_map)
+                cv2.waitKey()
 
     if test_overall:
 
@@ -118,4 +118,14 @@ if __name__ == "__main__":
         plt.figure(figsize=(16, 16))
         sns.heatmap(confusionmatrix, cmap='Blues', annot=True, cbar=True)
         plt.show()
+
+        # confusionmatrix_norm = confusionmatrix / confusionmatrix.astype(np.float).sum(axis=1)
+        # confusionmatrix_norm.round(decimals=2)
+        confusionmatrix_norm = np.around(confusionmatrix.astype('float') / confusionmatrix.sum(axis=1)[:, np.newaxis], decimals=2)
+
+        print(confusionmatrix_norm)
+        plt.figure(figsize=(16, 16))
+        sns.heatmap(confusionmatrix_norm, cmap='Blues', annot=True, cbar=True)
+        plt.show()
+
         print(classification_report(true_classes, predicted_classes))

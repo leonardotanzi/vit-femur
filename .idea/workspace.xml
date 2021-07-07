@@ -4,6 +4,9 @@
     <list default="true" id="c0133fe2-f1f5-4ea5-9a27-19da6d5192fa" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Clustering.py" beforeDir="false" afterPath="$PROJECT_DIR$/Clustering.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test.py" beforeDir="false" afterPath="$PROJECT_DIR$/Test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrainViT_finetune.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrainViT_finetune.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,7 +42,7 @@
       <recent name="C:\Users\d053175\Desktop\ViT\ViT\Code" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.Clustering">
+  <component name="RunManager" selected="Python.TrainViT_finetune_nogenerator">
     <configuration name="Clustering" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Code" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -61,7 +64,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="ConvClustering" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="Test" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Code" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -73,7 +76,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/ConvClustering.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Test.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -82,7 +85,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="ExtractVectorForCluster" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="TrainViT_finetune" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Code" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -94,7 +97,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/ExtractVectorForCluster.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/TrainViT_finetune.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -103,7 +106,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="ExtractVectorFromImages" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="TrainViT_finetune_nogenerator" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Code" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -115,7 +118,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/ExtractVectorFromImages.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/TrainViT_finetune_nogenerator.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -124,7 +127,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="TrainViT_finetune_clustering" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="utils" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Code" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -136,7 +139,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/TrainViT_finetune_clustering.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/utils.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -147,11 +150,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.TrainViT_finetune_nogenerator" />
+        <item itemvalue="Python.TrainViT_finetune" />
+        <item itemvalue="Python.Test" />
+        <item itemvalue="Python.utils" />
         <item itemvalue="Python.Clustering" />
-        <item itemvalue="Python.TrainViT_finetune_clustering" />
-        <item itemvalue="Python.ConvClustering" />
-        <item itemvalue="Python.ExtractVectorForCluster" />
-        <item itemvalue="Python.ExtractVectorFromImages" />
       </list>
     </recent_temporary>
   </component>
@@ -169,10 +172,10 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
-    <state x="552" y="236" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1623162641376">
-      <screen x="0" y="0" width="2560" height="1400" />
+    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1625220837013">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1622454904526" />
+    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1625220837013" />
     <state x="552" y="236" key="#com.intellij.execution.impl.EditConfigurationsDialog/2560.0.2560.1400/0.0.2560.1400@0.0.2560.1400" timestamp="1623162641376" />
     <state x="123" y="124" width="2315" height="1153" key="DiffContextDialog" timestamp="1624264211811">
       <screen x="0" y="0" width="2560" height="1400" />
@@ -184,50 +187,58 @@
     </state>
     <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1623347481526" />
     <state x="987" y="370" key="FileChooserDialogImpl/2560.0.2560.1400/0.0.2560.1400@0.0.2560.1400" timestamp="1624263999257" />
-    <state width="1899" height="273" key="GridCell.Tab.0.bottom" timestamp="1625152123127">
+    <state width="2539" height="273" key="GridCell.Tab.0.bottom" timestamp="1625496408981">
+      <screen x="2560" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1899" height="273" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1625486720272" />
+    <state width="2539" height="273" key="GridCell.Tab.0.bottom/2560.0.2560.1400/0.0.2560.1400@0.0.2560.1400" timestamp="1625240693321" />
+    <state width="2539" height="273" key="GridCell.Tab.0.bottom/2560.0.2560.1400/0.0.2560.1400@2560.0.2560.1400" timestamp="1625496408981" />
+    <state width="2539" height="273" key="GridCell.Tab.0.center" timestamp="1625496408981">
+      <screen x="2560" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1899" height="273" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1625486720271" />
+    <state width="2539" height="273" key="GridCell.Tab.0.center/2560.0.2560.1400/0.0.2560.1400@0.0.2560.1400" timestamp="1625240693321" />
+    <state width="2539" height="273" key="GridCell.Tab.0.center/2560.0.2560.1400/0.0.2560.1400@2560.0.2560.1400" timestamp="1625496408981" />
+    <state width="2539" height="273" key="GridCell.Tab.0.left" timestamp="1625496408981">
+      <screen x="2560" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1899" height="273" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1625486720270" />
+    <state width="2539" height="273" key="GridCell.Tab.0.left/2560.0.2560.1400/0.0.2560.1400@0.0.2560.1400" timestamp="1625240693320" />
+    <state width="2539" height="273" key="GridCell.Tab.0.left/2560.0.2560.1400/0.0.2560.1400@2560.0.2560.1400" timestamp="1625496408981" />
+    <state width="2539" height="273" key="GridCell.Tab.0.right" timestamp="1625496408981">
+      <screen x="2560" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1899" height="273" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1625486720271" />
+    <state width="2539" height="273" key="GridCell.Tab.0.right/2560.0.2560.1400/0.0.2560.1400@0.0.2560.1400" timestamp="1625240693321" />
+    <state width="2539" height="273" key="GridCell.Tab.0.right/2560.0.2560.1400/0.0.2560.1400@2560.0.2560.1400" timestamp="1625496408981" />
+    <state width="2539" height="339" key="GridCell.Tab.1.bottom" timestamp="1625495211247">
+      <screen x="2560" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1899" height="238" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1625480691315" />
+    <state width="2539" height="341" key="GridCell.Tab.1.bottom/2560.0.2560.1400/0.0.2560.1400@0.0.2560.1400" timestamp="1625238989131" />
+    <state width="2539" height="339" key="GridCell.Tab.1.bottom/2560.0.2560.1400/0.0.2560.1400@2560.0.2560.1400" timestamp="1625495211247" />
+    <state width="2539" height="339" key="GridCell.Tab.1.center" timestamp="1625495211247">
+      <screen x="2560" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1899" height="238" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1625480691315" />
+    <state width="2539" height="341" key="GridCell.Tab.1.center/2560.0.2560.1400/0.0.2560.1400@0.0.2560.1400" timestamp="1625238989130" />
+    <state width="2539" height="339" key="GridCell.Tab.1.center/2560.0.2560.1400/0.0.2560.1400@2560.0.2560.1400" timestamp="1625495211247" />
+    <state width="2539" height="339" key="GridCell.Tab.1.left" timestamp="1625495211247">
+      <screen x="2560" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1899" height="238" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1625480691315" />
+    <state width="2539" height="341" key="GridCell.Tab.1.left/2560.0.2560.1400/0.0.2560.1400@0.0.2560.1400" timestamp="1625238989130" />
+    <state width="2539" height="339" key="GridCell.Tab.1.left/2560.0.2560.1400/0.0.2560.1400@2560.0.2560.1400" timestamp="1625495211247" />
+    <state width="2539" height="339" key="GridCell.Tab.1.right" timestamp="1625495211247">
+      <screen x="2560" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1899" height="238" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1625480691315" />
+    <state width="2539" height="341" key="GridCell.Tab.1.right/2560.0.2560.1400/0.0.2560.1400@0.0.2560.1400" timestamp="1625238989130" />
+    <state width="2539" height="339" key="GridCell.Tab.1.right/2560.0.2560.1400/0.0.2560.1400@2560.0.2560.1400" timestamp="1625495211247" />
+    <state x="461" y="162" key="SettingsEditor" timestamp="1625479165856">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="273" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1625152123127" />
-    <state width="2539" height="272" key="GridCell.Tab.0.bottom/2560.0.2560.1400/0.0.2560.1400@0.0.2560.1400" timestamp="1624281620613" />
-    <state width="1899" height="273" key="GridCell.Tab.0.center" timestamp="1625152123126">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1899" height="273" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1625152123126" />
-    <state width="2539" height="272" key="GridCell.Tab.0.center/2560.0.2560.1400/0.0.2560.1400@0.0.2560.1400" timestamp="1624281620613" />
-    <state width="1899" height="273" key="GridCell.Tab.0.left" timestamp="1625152123126">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1899" height="273" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1625152123126" />
-    <state width="2539" height="272" key="GridCell.Tab.0.left/2560.0.2560.1400/0.0.2560.1400@0.0.2560.1400" timestamp="1624281620613" />
-    <state width="1899" height="273" key="GridCell.Tab.0.right" timestamp="1625152123126">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1899" height="273" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1625152123126" />
-    <state width="2539" height="272" key="GridCell.Tab.0.right/2560.0.2560.1400/0.0.2560.1400@0.0.2560.1400" timestamp="1624281620613" />
-    <state width="1899" height="239" key="GridCell.Tab.1.bottom" timestamp="1625151687457">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1899" height="239" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1625151687457" />
-    <state width="2539" height="492" key="GridCell.Tab.1.bottom/2560.0.2560.1400/0.0.2560.1400@0.0.2560.1400" timestamp="1623163869824" />
-    <state width="1899" height="239" key="GridCell.Tab.1.center" timestamp="1625151687457">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1899" height="239" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1625151687457" />
-    <state width="2539" height="492" key="GridCell.Tab.1.center/2560.0.2560.1400/0.0.2560.1400@0.0.2560.1400" timestamp="1623163869823" />
-    <state width="1899" height="239" key="GridCell.Tab.1.left" timestamp="1625151687457">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1899" height="239" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1625151687457" />
-    <state width="2539" height="492" key="GridCell.Tab.1.left/2560.0.2560.1400/0.0.2560.1400@0.0.2560.1400" timestamp="1623163869823" />
-    <state width="1899" height="239" key="GridCell.Tab.1.right" timestamp="1625151687457">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1899" height="239" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1625151687457" />
-    <state width="2539" height="492" key="GridCell.Tab.1.right/2560.0.2560.1400/0.0.2560.1400@0.0.2560.1400" timestamp="1623163869824" />
-    <state x="461" y="162" key="SettingsEditor" timestamp="1622453390125">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="461" y="162" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1622453390125" />
+    <state x="461" y="162" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1625479165856" />
     <state x="92" y="92" width="1736" height="856" key="com.intellij.history.integration.ui.views.RecentChangeDialog" timestamp="1623347540988">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -290,6 +301,21 @@
           <url>file://$PROJECT_DIR$/Clustering.py</url>
           <line>281</line>
           <option name="timeStamp" value="55" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/TrainViT_finetune.py</url>
+          <line>20</line>
+          <option name="timeStamp" value="57" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Test.py</url>
+          <line>124</line>
+          <option name="timeStamp" value="69" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Test.py</url>
+          <line>114</line>
+          <option name="timeStamp" value="70" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

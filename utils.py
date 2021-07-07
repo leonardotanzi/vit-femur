@@ -8,6 +8,57 @@ from sklearn.model_selection import KFold
 from tqdm import tqdm
 
 
+def from7to3classes(y):
+    for i in range(len(y)):
+        if y[i] == 1 or y[i] == 2:
+            y[i] = 0
+        elif y[i] == 3 or y[i] == 4 or y[i] == 5:
+            y[i] = 1
+        elif y[i] == 6:
+            y[i] = 2
+    return y
+
+
+def from7to2classes(y):
+    for i in range(len(y)):
+        if y[i] == 1 or y[i] == 2 or y[i] == 3 or y[i] == 4 or y[i] == 5:
+            y[i] = 0
+        elif y[i] == 6:
+            y[i] = 1
+    return y
+
+
+
+def build_dataset(train_path, classes_list):
+
+    X = []
+    Y = []
+
+    for classes_name in classes_list:
+        for c in classes_list:
+            if os.path.isdir(os.path.join(train_path, c)):
+                for file_name in glob.glob(os.path.join(train_path, c) + "//*.png"):
+                    image = cv2.imread(file_name, cv2.COLOR_GRAY2RGB)
+
+                    if len(image.shape) < 3:
+                        image = np.stack((image,) * 3, axis=-1)
+                    else:
+                        print(image.shape)
+                        print(file_name)
+
+                    image = cv2.resize(image, (224, 224))
+                    X.append(image)
+                    y = [0] * len(classes_list)
+                    y[classes_list.index(c)] = 1
+                    Y.append(y)
+
+    X = np.asarray(X)
+    y = np.asarray(Y)
+
+    np.savez_compressed("..\\NumpyData\\X_test_images.npz", X)
+    np.savez_compressed("..\\NumpyData\\y_test_images.npz", y)
+
+
 def k_fold(K=7):
     image_size = 224
     categories = ["A1", "A2", "A3", "B1", "B2", "B3", "Unbroken"]
@@ -124,3 +175,8 @@ def seed_everything(seed=0):
     tf.random.set_seed(seed)
     os.environ['PYTHONHASHSEED'] = str(seed)
     os.environ['TF_DETERMINISTIC_OPS'] = '1'
+
+
+if __name__=="__main__":
+
+    pass

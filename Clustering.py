@@ -137,24 +137,6 @@ def target_distribution(q):
     return (weight.T / weight.sum(1)).T
 
 
-def from7to3classes(y):
-    for i in range(len(y)):
-        if y[i] == 1 or y[i] == 2:
-            y[i] = 0
-        elif y[i] == 3 or y[i] == 4 or y[i] == 5:
-            y[i] = 1
-        elif y[i] == 6:
-            y[i] = 2
-    return y
-
-
-def from7to2classes(y):
-    for i in range(len(y)):
-        if y[i] == 1 or y[i] == 2 or y[i] == 3 or y[i] == 4 or y[i] == 5:
-            y[i] = 0
-        elif y[i] == 6:
-            y[i] = 1
-    return y
 
 
 if __name__ == "__main__":
@@ -172,8 +154,8 @@ if __name__ == "__main__":
     y_dict_test = np.load("..\\NumpyData\\y_test.npz")
     y_test = y_dict_test['arr_0']
 
-    y = from7to3classes(y)
-    y_test = from7to3classes(y_test)
+    y = from7to2classes(y)
+    y_test = from7to2classes(y_test)
 
     n_clusters = len(np.unique(y))
     kmeans = KMeans(n_clusters=n_clusters, n_init=20, n_jobs=4)
@@ -195,8 +177,8 @@ if __name__ == "__main__":
 
     if pretrain_autoencoder:
         autoencoder.fit(X, X, batch_size=batch_size, epochs=pretrain_epochs)  # , callbacks=cb)
-        autoencoder.save("..\\Models\\ViT-unsupervised\\ae_weights_3class.h5")
-        encoder.save("..\\Models\\ViT-unsupervised\\e_weights_3class.h5")
+        # autoencoder.save("..\\Models\\ViT-unsupervised\\ae_weights_3class.h5")
+        # encoder.save("..\\Models\\ViT-unsupervised\\e_weights_3class.h5")
     else:
         autoencoder = load_model("..\\Models\\ViT-unsupervised\\ae_weights.h5")
         encoder = load_model("..\\Models\\ViT-unsupervised\\e_weights_cnn.h5")
@@ -280,7 +262,7 @@ if __name__ == "__main__":
     plt.show()
 
     x_test_encoded = encoder.predict(X_test, batch_size=batch_size)
-    plt.figure(figsize=(10, 10))
+    plt.figure(figsize=(9, 9))
     plt.scatter(x_test_encoded[:, 0], x_test_encoded[:, 1], c=y_test)
     plt.colorbar()
     plt.show()

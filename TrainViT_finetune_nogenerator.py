@@ -1,20 +1,14 @@
-import pandas as pd
-import numpy as np
-import tensorflow as tf
 import tensorflow_addons as tfa
 import glob, warnings
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix, classification_report
 import seaborn as sns
 from vit_keras import vit
-from vit_keras import visualize
 from utils import *
 from tensorflow.keras.callbacks import Callback
 import tensorflow.keras.backend as K
-from keras.utils.data_utils import Sequence
-from imblearn.over_sampling import RandomOverSampler
-from imblearn.keras import BalancedBatchGenerator
-from keras.utils import to_categorical
+from imblearn.over_sampling import RandomOverSampler, SMOTE
+import sklearn
 
 
 def compute_weights(input_folder):
@@ -110,54 +104,84 @@ if __name__ == "__main__":
     BATCH_SIZE = 16
     EPOCHS = 40
     visualize_map = False
-    load = True
+    load = False
+    oversample = True
+
+    model_name = "D:\\3classes_l16-evenbiggerdense-15"  # "..\\Models\\ViT-supervised\\7classes_l16-evenbiggerdense-nogen-oversample_13"
 
     train_path = 'D:\\Drive\\PelvisDicom\\FinalDataset\\Dataset\\Train\\'
     test_path = 'D:\\Drive\\PelvisDicom\\FinalDataset\\Dataset\\Test\\'
 
-    classes_list = ["A1", "A2", "A3", "B1", "B2", "B3"]
-    # classes_list = ["A", "B", "Unbroken"]
+    # classes_list = ["A1", "A2", "A3", "B1", "B2", "B3", "Unbroken"]
+    classes_list = ["A", "B", "Unbroken"]
 
-    model_name = "..\\Models\\ViT-supervised\\7classes_l16-evenbiggerdense-6classes"
+    if len(classes_list) == 7:
+        X_dict = np.load("..\\NumpyData\\X_nogen.npz")
+        X = X_dict['arr_0']
+        y_dict = np.load("..\\NumpyData\\y_nogen.npz")
+        y = y_dict['arr_0']
 
-    datagen_aug = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1./255,
-                                                              validation_split=0.15,
-                                                              # rotation_range=5,
-                                                              # width_shift_range=0.1,
-                                                              # height_shift_range=0.1,
-                                                              # brightness_range=(-5, 5),
-                                                              # zoom_range=0.1
-                                                              )
-    datagen = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1./255)
+        X_dict_test = np.load("..\\NumpyData\\X_nogen_test.npz")
+        X_test = X_dict_test['arr_0']
+        y_dict_test = np.load("..\\NumpyData\\y_nogen_test.npz")
+        y_test = y_dict_test['arr_0']
 
-    train_gen = datagen_aug.flow_from_directory(directory=train_path,
-                                            subset="training",
-                                            classes=classes_list,
-                                            batch_size=BATCH_SIZE,
-                                            seed=1,
-                                            color_mode='rgb',
-                                            shuffle=True,
-                                            class_mode='categorical',
-                                            target_size=(IMAGE_SIZE, IMAGE_SIZE))
+    else:
+        X = []
+        Y = []
 
-    valid_gen = datagen_aug.flow_from_directory(directory=train_path,
-                                            subset='validation',
-                                            classes=classes_list,
-                                            batch_size=BATCH_SIZE,
-                                            seed=1,
-                                            color_mode='rgb',
-                                            shuffle=True,
-                                            class_mode='categorical',
-                                            target_size=(IMAGE_SIZE, IMAGE_SIZE))
+        for c in classes_list:
+            if os.path.isdir(os.path.join(train_path, c)):
+                for file_name in glob.glob(os.path.join(train_path, c) + "//*.png"):
+                    image = cv2.imread(file_name, cv2.COLOR_GRAY2RGB)
 
-    test_gen = datagen.flow_from_directory(directory=test_path,
-                                            classes=classes_list,
-                                            batch_size=BATCH_SIZE,
-                                            seed=1,
-                                            color_mode='rgb',
-                                            shuffle=False,
-                                            class_mode='categorical',
-                                            target_size=(IMAGE_SIZE, IMAGE_SIZE))
+                    if len(image.shape) < 3:
+                        image = np.stack((image,) * 3, axis=-1)
+                    else:
+                        print(image.shape)
+                        print(file_name)
+
+                    image = cv2.resize(image, (224, 224))
+                    X.append(image)
+                    y = [0] * len(classes_list)
+                    y[classes_list.index(c)] = 1
+                    Y.append(y)
+
+        X = np.asarray(X) / 255.0
+        y = np.asarray(Y)
+
+        X_t = []
+        Y_t = []
+        for c in classes_list:
+            if os.path.isdir(os.path.join(test_path, c)):
+                for file_name in glob.glob(os.path.join(test_path, c) + "//*.png"):
+                    image = cv2.imread(file_name, cv2.COLOR_GRAY2RGB)
+
+                    if len(image.shape) < 3:
+                        image = np.stack((image,) * 3, axis=-1)
+                    else:
+                        print(image.shape)
+                        print(file_name)
+
+                    image = cv2.resize(image, (224, 224))
+                    X_t.append(image)
+                    y_t = [0] * len(classes_list)
+                    y_t[classes_list.index(c)] = 1
+                    Y_t.append(y_t)
+
+        X_test = np.asarray(X_t) / 255.0
+        y_test = np.asarray(Y_t)
+
+    X, X_valid, y, y_valid = sklearn.model_selection.train_test_split(X, y, test_size=0.15, random_state=1)
+
+    if oversample:
+        ros = RandomOverSampler(random_state=0)
+        data_oversampled = X.reshape(X.shape[0], X.shape[1] * X.shape[2] * X.shape[3])
+        X_res, y = ros.fit_resample(data_oversampled, y)
+        X = X_res.reshape(-1, 224, 224, 3)
+        unique, counts = np.unique(np.argmax(y, axis=1), return_counts=True)
+        print(dict(zip(unique, counts)))
+
 
     vit_model = vit.vit_l16(
             image_size=IMAGE_SIZE,
@@ -192,9 +216,6 @@ if __name__ == "__main__":
                   loss="categorical_crossentropy", #tf.keras.losses.CategoricalCrossentropy(label_smoothing=0.2),
                   metrics=['accuracy'])
 
-    STEP_SIZE_TRAIN = train_gen.n // train_gen.batch_size
-    STEP_SIZE_VALID = valid_gen.n // valid_gen.batch_size
-
     reduce_lr = tf.keras.callbacks.ReduceLROnPlateau(monitor='val_accuracy',
                                                      factor=0.2,
                                                      patience=4,
@@ -210,7 +231,7 @@ if __name__ == "__main__":
                                                      restore_best_weights=True,
                                                      verbose=1)
 
-    checkpointer = tf.keras.callbacks.ModelCheckpoint(filepath="D:\\7classes_l16-evenbiggerdense-nogenerator_{epoch:02d}.hdf5",
+    checkpointer = tf.keras.callbacks.ModelCheckpoint(filepath="D:\\3classes_l16-evenbiggerdense-oversampling-{epoch:02d}.hdf5",
                                                       monitor="val_accuracy",
                                                       verbose=1,
                                                       save_best_only=False,
@@ -221,13 +242,12 @@ if __name__ == "__main__":
     callbacks = [earlystopping, checkpointer, reduce_lr] # WarmupExponentialDecay(lr_base=0.0002, decay=0, warmup_epochs=2)]
 
     if not load:
-        # class_weights_train = compute_weights(train_path)
 
-        model.fit(x=train_gen,
-                  steps_per_epoch=STEP_SIZE_TRAIN,
-                  validation_data=valid_gen,
-                  validation_steps=STEP_SIZE_VALID,
+        model.fit(x=X,
+                  y=y,
+                  batch_size=BATCH_SIZE,
                   epochs=EPOCHS,
+                  validation_data=(X_valid, y_valid),
                   # class_weight=class_weights_train,
                   callbacks=callbacks)
 
@@ -235,12 +255,11 @@ if __name__ == "__main__":
 
     model.summary()
 
-    print(model.evaluate_generator(test_gen))
-    print(model.evaluate_generator(valid_gen))
+    print(model.evaluate(X_test, y_test, batch_size=BATCH_SIZE))
 
-    predicted_classes = np.argmax(model.predict_generator(test_gen, steps=test_gen.n // test_gen.batch_size + 1), axis=1)
-    true_classes = test_gen.classes
-    class_labels = list(test_gen.class_indices.keys())
+    predicted_classes = np.argmax(model.predict(X_test), axis=1)
+    true_classes = np.argmax(y_test, axis=1)
+    # class_labels = list(test_gen.class_indices.keys())
 
     confusionmatrix = confusion_matrix(true_classes, predicted_classes)
     print(confusionmatrix)
@@ -248,8 +267,10 @@ if __name__ == "__main__":
     sns.heatmap(confusionmatrix, cmap='Blues', annot=True, cbar=True)
     plt.show()
 
-    confusionmatrix_norm = confusionmatrix / confusionmatrix.astype(np.float).sum(axis=1)
-    confusionmatrix_norm.round(decimals=2)
+    # confusionmatrix_norm = confusionmatrix / confusionmatrix.astype(np.float).sum(axis=1)
+    # confusionmatrix_norm.round(decimals=2)
+    confusionmatrix_norm = np.around(confusionmatrix.astype('float') / confusionmatrix.sum(axis=1)[:, np.newaxis],
+                                     decimals=2)
     print(confusionmatrix_norm)
     plt.figure(figsize=(16, 16))
     sns.heatmap(confusionmatrix_norm, cmap='Blues', annot=True, cbar=True)
@@ -257,3 +278,4 @@ if __name__ == "__main__":
 
     print(classification_report(true_classes, predicted_classes))
 
+    # CNN
