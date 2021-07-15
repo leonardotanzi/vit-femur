@@ -107,13 +107,13 @@ if __name__ == "__main__":
     load = False
     oversample = True
 
-    model_name = "D:\\3classes_l16-evenbiggerdense-15"  # "..\\Models\\ViT-supervised\\7classes_l16-evenbiggerdense-nogen-oversample_13"
+    model_name = "..\\Models\\ViT-supervised\\selection\\6classes_l16-evenbiggerdense-oversampling-20" #"D:\\7classes_l16-evenbiggerdense-oversampling-08"
 
     train_path = 'D:\\Drive\\PelvisDicom\\FinalDataset\\Dataset\\Train\\'
     test_path = 'D:\\Drive\\PelvisDicom\\FinalDataset\\Dataset\\Test\\'
 
-    # classes_list = ["A1", "A2", "A3", "B1", "B2", "B3", "Unbroken"]
-    classes_list = ["A", "B", "Unbroken"]
+    classes_list = ["A1", "A2", "A3", "B1", "B2", "B3", "Unbroken"]
+    # classes_list = ["A", "B", "Unbroken"]
 
     if len(classes_list) == 7:
         X_dict = np.load("..\\NumpyData\\X_nogen.npz")
@@ -175,7 +175,7 @@ if __name__ == "__main__":
     X, X_valid, y, y_valid = sklearn.model_selection.train_test_split(X, y, test_size=0.15, random_state=1)
 
     if oversample:
-        ros = RandomOverSampler(random_state=0)
+        ros = SMOTE(random_state=0)
         data_oversampled = X.reshape(X.shape[0], X.shape[1] * X.shape[2] * X.shape[3])
         X_res, y = ros.fit_resample(data_oversampled, y)
         X = X_res.reshape(-1, 224, 224, 3)
@@ -231,7 +231,7 @@ if __name__ == "__main__":
                                                      restore_best_weights=True,
                                                      verbose=1)
 
-    checkpointer = tf.keras.callbacks.ModelCheckpoint(filepath="D:\\3classes_l16-evenbiggerdense-oversampling-{epoch:02d}.hdf5",
+    checkpointer = tf.keras.callbacks.ModelCheckpoint(filepath="D:\\7classes_l16-evenbiggerdense-SMOTE-{epoch:02d}.hdf5",
                                                       monitor="val_accuracy",
                                                       verbose=1,
                                                       save_best_only=False,

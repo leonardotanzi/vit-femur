@@ -137,25 +137,20 @@ def target_distribution(q):
     return (weight.T / weight.sum(1)).T
 
 
-
-
 if __name__ == "__main__":
 
     pretrain_autoencoder = True
     train_cluster = True
 
-    X_dict = np.load("..\\NumpyData\\X.npz")
+    X_dict = np.load("..\\NumpyData\\X_train_cnn.npz")
     X = X_dict['arr_0']
-    y_dict = np.load("..\\NumpyData\\y.npz")
+    y_dict = np.load("..\\NumpyData\\y_train_cnn.npz")
     y = y_dict['arr_0']
 
-    X_dict_test = np.load("..\\NumpyData\\X_test.npz")
+    X_dict_test = np.load("..\\NumpyData\\X_test_cnn.npz")
     X_test = X_dict_test['arr_0']
-    y_dict_test = np.load("..\\NumpyData\\y_test.npz")
+    y_dict_test = np.load("..\\NumpyData\\y_test_cnn.npz")
     y_test = y_dict_test['arr_0']
-
-    y = from7to2classes(y)
-    y_test = from7to2classes(y_test)
 
     n_clusters = len(np.unique(y))
     kmeans = KMeans(n_clusters=n_clusters, n_init=20, n_jobs=4)
@@ -166,7 +161,7 @@ if __name__ == "__main__":
     # Generalization of Xavier inizialization
     init = VarianceScaling(scale=1. / 3., mode='fan_in', distribution='uniform')
     pretrain_optimizer = SGD(lr=0.01, momentum=0.9)
-    pretrain_epochs = 200
+    pretrain_epochs = 100
     batch_size = 128
 
     autoencoder, encoder = autoencoder(dims, init=init)
@@ -180,8 +175,8 @@ if __name__ == "__main__":
         # autoencoder.save("..\\Models\\ViT-unsupervised\\ae_weights_3class.h5")
         # encoder.save("..\\Models\\ViT-unsupervised\\e_weights_3class.h5")
     else:
-        autoencoder = load_model("..\\Models\\ViT-unsupervised\\ae_weights.h5")
-        encoder = load_model("..\\Models\\ViT-unsupervised\\e_weights_cnn.h5")
+        autoencoder = load_model("..\\Models\\ViT-unsupervised\\ae_weights_finalcnn.h5")
+        encoder = load_model("..\\Models\\ViT-unsupervised\\e_weights_finalcnn.h5")
 
     clustering_layer = ClusteringLayer(n_clusters, name='clustering')(encoder.output)
     model = Model(inputs=encoder.input, outputs=clustering_layer)
@@ -235,7 +230,7 @@ if __name__ == "__main__":
         # model.save("..\\Models\\ViT-unsupervised\\DEC_model_final.h5")
 
     else:
-        model = load_model("..\\Models\\ViT-unsupervised\\DEC_model_final_3class.h5")
+        model = load_model("..\\Models\\ViT-unsupervised\\DEC_model_finalcnn.h5")
 
     # Eval.
     q = model.predict(X_test, verbose=0)

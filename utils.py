@@ -6,6 +6,7 @@ import glob
 import random
 from sklearn.model_selection import KFold
 from tqdm import tqdm
+from scipy import stats
 
 
 def from7to3classes(y):
@@ -61,15 +62,17 @@ def build_dataset(train_path, classes_list):
 
 def k_fold(K=7):
     image_size = 224
-    categories = ["A1", "A2", "A3", "B1", "B2", "B3", "Unbroken"]
-    path = "D:\\Drive\\PelvisDicom\\FinalDataset\\"
+    # categories = ["A1", "A2", "A3", "B1", "B2", "B3", "Unbroken"]
+    #path = "D:\\Drive\\PelvisDicom\\FinalDataset\\"
+    categories = ["YES", "NO"]
+    path = "D:\\Drive\\BeautyClassifier-POLI_MOLINETTE\\Dataset\\"
 
     input_folders = []
     for cat in categories:
         input_folders.append(path + cat)
 
     # create the root folder
-    output_path = "D:\\Drive\\PelvisDicom\\KCrossVal\\"
+    output_path = "D:\\Drive\\BeautyClassifier-POLI_MOLINETTE\\KCrossVal\\"
     os.mkdir(output_path)
 
     # create folders for splitting the dataset
@@ -97,7 +100,8 @@ def k_fold(K=7):
 
         for img in tqdm(os.listdir(path)):
             try:
-                img_array = cv2.imread(os.path.join(path, img), cv2.IMREAD_GRAYSCALE)  # convert to array
+                # img_array = cv2.imread(os.path.join(path, img), cv2.IMREAD_GRAYSCALE)  # convert to array
+                img_array = cv2.imread(os.path.join(path, img), cv2.COLOR_BGR2RGB)  # convert to array
                 new_array = cv2.resize(img_array, (image_size, image_size))  # resize to normalize data size
                 X.append(new_array)  # add this to our training_data
                 X_original.append(img_array)
@@ -107,7 +111,8 @@ def k_fold(K=7):
             except Exception as e:  # in the interest in keeping the output clean...
                 pass
 
-        X = np.array(X).reshape(-1, image_size, image_size, 1)
+        # X = np.array(X).reshape(-1, image_size, image_size, 1)
+        X = np.array(X).reshape(-1, image_size, image_size, 3)
 
         kf = KFold(n_splits=7, random_state=None, shuffle=True)
         nFold = 1
@@ -177,6 +182,37 @@ def seed_everything(seed=0):
     os.environ['TF_DETERMINISTIC_OPS'] = '1'
 
 
-if __name__=="__main__":
+def mean_confidence_interval(data, confidence=0.95):
+    a = 1.0 * np.array(data)
+    n = len(a)
+    m, se = np.mean(a), stats.sem(a)
+    h = se * stats.t.ppf((1 + confidence) / 2., n-1)
+    return m, m-h, m+h
 
-    pass
+
+if __name__=="__main__":
+   #
+   # a = [0.53, 0.43, 0.60, 0.61, 0.45, 0.19, 0.89]
+   # a = [0.42, 0.65, 0.65, 0.59, 0.43, 0.43, 0.85]
+   # a= [0.53, 0.43,0.60,0.61,0.45,0.19,0.89]
+   # a = [0.47,0.51,0.63,0.60,0.44,0.26,0.87]
+
+   # a = [0.51,0.21,0.32,0.70,0.20,0.06,0.88]
+   #    # a = [0.36, 0.50,0.20,0.51,0.59,0.11,0.87]
+   #    # a = [0.51, 0.21, 0.32, 0.70, 0.20, 0.06, 0.88]
+   #    # a = [0.42, 0.30, 0.24, 0.59, 0.30, 0.08, 0.87]
+
+   a = [0.66, 0.66, 0.92, 0.93, 0.69, 0.56, 0.94]
+   w = [91, 94, 25, 90, 49, 16, 285]
+   w = w / np.sum(np.asarray(w)) * np.asarray(a)
+   y = np.sum(np.asarray(a) * np.asarray(w)) / np.sum(np.asarray(w))
+   np.average(a, weights=w)
+   print(mean_confidence_interval(w))
+   # a = [0.66, 0.77, 0.92, 0.74, 0.79, 0.56, 0.95]
+   # a = [0.66, 0.66, 0.92, 0.93, 0.69, 0.56, 0.94]
+   # a = [0.66, 0.71, 0.92, 0.82, 0.74, 0.56, 0.95]
+
+   # a = np.asarray(a)
+   # print(np.mean(a))
+   # print(mean_confidence_interval(a))
+

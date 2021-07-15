@@ -1,8 +1,8 @@
 import tensorflow as tf
 import numpy as np
 import tensorflow_addons as tfa
-from tensorflow.keras.applications.resnet50 import ResNet50, preprocess_input
-# from tensorflow.keras.applications.inception_v3 import InceptionV3, preprocess_input
+# from tensorflow.keras.applications.resnet50 import ResNet50, preprocess_input
+from tensorflow.keras.applications.inception_v3 import InceptionV3, preprocess_input
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix, classification_report
 from tensorflow.keras.models import Sequential, load_model, Model
@@ -14,15 +14,15 @@ if __name__ == "__main__":
 
     seed_everything()
 
-    train_path = 'D:\\Drive\\PelvisDicom\\FinalDataset\\Dataset\\train\\'
-    test_path = 'D:\\Drive\\PelvisDicom\\FinalDataset\\Dataset\\test\\'
+    train_path = 'D:\\Drive\\PelvisDicom\\FinalDataset\\Dataset\\Train\\'
+    test_path = 'D:\\Drive\\PelvisDicom\\FinalDataset\\Dataset\\Test\\'
 
-    classes_list = ["A1", "A2", "A3", "B1", "B2", "B3", "Unbroken"]
-    # classes_list = ["A", "B", "Unbroken"]
+    # classes_list = ["A1", "A2", "A3", "B1", "B2", "B3", "Unbroken"]
+    classes_list = ["B1", "B2", "B3"]
 
-    model_name = "7classes_cnn_1024"
+    model_name = "D:\\3classes_B_ResNet-20"
 
-    IMAGE_SIZE = 224
+    IMAGE_SIZE = 299
     BATCH_SIZE = 64
     EPOCHS = 20
     load = False
@@ -63,8 +63,8 @@ if __name__ == "__main__":
 
     optimizer = tfa.optimizers.RectifiedAdam(learning_rate=learning_rate)
 
-    model = ResNet50(include_top=False, input_shape=(IMAGE_SIZE, IMAGE_SIZE, 3), weights="imagenet", pooling="avg")
-    out = Dense(1024, activation="relu")(model.output)
+    model = InceptionV3(include_top=False, input_shape=(IMAGE_SIZE, IMAGE_SIZE, 3), weights="imagenet", pooling="avg")
+    out = Dense(4096, activation="relu")(model.output)
     out = BatchNormalization()(out)
     out = Dropout(0.5)(out)
     out = Dense(len(classes_list))(out)
@@ -76,7 +76,7 @@ if __name__ == "__main__":
     model.summary()
 
     model.compile(optimizer=optimizer,
-                  loss=tf.keras.losses.CategoricalCrossentropy(label_smoothing=0.2),
+                  loss="categorical_crossentropy",
                   metrics=['accuracy'])
 
     STEP_SIZE_TRAIN = train_gen.n // train_gen.batch_size
@@ -97,17 +97,18 @@ if __name__ == "__main__":
                                                      restore_best_weights=True,
                                                      verbose=1)
 
-    checkpointer = tf.keras.callbacks.ModelCheckpoint(filepath="./best_{}.hdf5".format(model_name),
+    checkpointer = tf.keras.callbacks.ModelCheckpoint(filepath="D:\\3classesB_ResNet-{epoch:02d}.hdf5",
                                                       monitor="val_accuracy",
                                                       verbose=1,
-                                                      save_best_only=True,
-                                                      save_weights_only=True,
-                                                      mode="max")
+                                                      save_best_only=False,
+                                                      save_weights_only=False,
+                                                      mode="max",
+                                                      period=1)
 
     callbacks = [earlystopping, reduce_lr, checkpointer]
 
     if load:
-        model.load_weights(model_name + ".h5")
+        model.load_weights(model_name + ".hdf5")
     else:
         model.fit(x=train_gen,
                   steps_per_epoch=STEP_SIZE_TRAIN,
@@ -119,7 +120,6 @@ if __name__ == "__main__":
         model.save(model_name + ".hdf5")
 
     print(model.evaluate_generator(test_gen))
-    print(model.evaluate_generator(valid_gen))
 
     predicted_classes = np.argmax(model.predict_generator(test_gen, steps=test_gen.n // test_gen.batch_size + 1),
                                   axis=1)
@@ -130,5 +130,12 @@ if __name__ == "__main__":
     print(confusionmatrix)
     plt.figure(figsize=(16, 16))
     sns.heatmap(confusionmatrix, cmap='Blues', annot=True, cbar=True)
+
+    confusionmatrix_norm = np.around(confusionmatrix.astype('float') / confusionmatrix.sum(axis=1)[:, np.newaxis],
+                                     decimals=2)
+    print(confusionmatrix_norm)
+    plt.figure(figsize=(16, 16))
+    sns.heatmap(confusionmatrix_norm, cmap='Blues', annot=True, cbar=True)
+    plt.show()
 
     print(classification_report(true_classes, predicted_classes))

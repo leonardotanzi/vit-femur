@@ -152,7 +152,7 @@ if __name__ == "__main__":
     dims = [X.shape[-1], 500, 500, 2000, 10]
     # Generalization of Xavier inizialization
     init = VarianceScaling(scale=1. / 3., mode='fan_in', distribution='uniform')
-    pretrain_epochs = 2
+    pretrain_epochs = 200
     batch_size = 128
 
     autoencoder, encoder = conv_autoencoder()
@@ -243,4 +243,10 @@ if __name__ == "__main__":
     plt.title("Confusion matrix", fontsize=30)
     plt.ylabel('True label', fontsize=25)
     plt.xlabel('Clustering label', fontsize=25)
+    plt.show()
+
+    x_test_encoded = encoder.predict(X_test, batch_size=batch_size)
+    plt.figure(figsize=(9, 9))
+    plt.scatter(x_test_encoded[:, 0], x_test_encoded[:, 1], c=y_test)
+    plt.colorbar()
     plt.show()
