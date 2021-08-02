@@ -11,6 +11,9 @@ from vit_keras import visualize
 from utils import *
 from tensorflow.keras.callbacks import Callback
 import tensorflow.keras.backend as K
+import xlwt
+from xlwt import Workbook
+import xlrd
 
 
 if __name__ == "__main__":
@@ -18,9 +21,10 @@ if __name__ == "__main__":
     seed_everything()
 
     visualize_map = False
-    visualize_map_no_gen = True
-    test_overall = False
-
+    visualize_map_no_gen = False
+    test_overall = True
+    read_excel = False
+    write_excel = False
     shuffle = False
     if visualize_map:
         shuffle = True
@@ -28,7 +32,7 @@ if __name__ == "__main__":
     IMAGE_SIZE = 224
     BATCH_SIZE = 16
 
-    test_path = 'D:\\Drive\\PelvisDicom\\FinalDataset\\Dataset\\Test\\'
+    test_path = 'D:\\Drive\\PelvisDicom\\FinalDataset\\Dataset\\Test\\TestDoctors\\'
     model_name = "..\\Models\\ViT-supervised\\selection\\7classes_l16-evenbiggerdense-oversampling-08" #"..\\Models\\ViT-supervised\\7classes_l16-evenbiggerdense"
 
     classes_list = ["A1", "A2", "A3", "B1", "B2", "B3", "Unbroken"]
@@ -142,7 +146,6 @@ if __name__ == "__main__":
             cv2.imwrite("..\\Map\\Map-{}-{}-{}.png".format(label, label_pred, i), attention_map)
             i += 1
 
-
     if test_overall:
 
         print(model.evaluate_generator(test_gen))
@@ -168,3 +171,77 @@ if __name__ == "__main__":
         plt.show()
 
         print(classification_report(true_classes, predicted_classes))
+
+    if write_excel:
+
+        X_t = []
+        Y_t = []
+        file_names = []
+        for c in classes_list:
+            if os.path.isdir(os.path.join(test_path, c)):
+                for file_name in glob.glob(os.path.join(test_path, c) + "//*.png"):
+                    image = cv2.imread(file_name, cv2.COLOR_GRAY2RGB)
+
+                    if len(image.shape) < 3:
+                        image = np.stack((image,) * 3, axis=-1)
+                    else:
+                        print(image.shape)
+                        print(file_name)
+
+                    file_names.append(file_name.split("\\")[-1].split(".")[0] + "." + file_name.split("\\")[-1].split(".")[1])
+                    image = cv2.resize(image, (224, 224))
+                    X_t.append(image)
+                    y_t = [0] * len(classes_list)
+                    y_t[classes_list.index(c)] = 1
+                    Y_t.append(y_t)
+
+        c = list(zip(X_t, file_names, Y_t))
+
+        random.shuffle(c)
+
+        X_t, file_names, Y_t = zip(*c)
+        # random.shuffle(X_t)
+        X_test = np.asarray(X_t) / 255.0
+        y_test = np.asarray(Y_t)
+
+        predicted_classes = model.predict(X_test)
+        predicted_classes_digits = np.argmax(predicted_classes, axis=1)
+        true_classes = np.argmax(y_test, axis=1)
+
+        wb = Workbook()
+
+        sheet = wb.add_sheet('ViT-prediction')
+
+        sheet.write(0, 0, "Name")
+        sheet.write(0, 1, "A1 (%)")
+        sheet.write(0, 2, "A2 (%)")
+        sheet.write(0, 3, "A3 (%)")
+        sheet.write(0, 4, "B1 (%)")
+        sheet.write(0, 5, "B2 (%)")
+        sheet.write(0, 6, "B3 (%)")
+        sheet.write(0, 7, "Unbroken (%)")
+        sheet.write(0, 8, "Prediction")
+        sheet.write(0, 9, "Real")
+
+        num_row = 1
+
+        for i in range(len(file_names)):
+            sheet.write(num_row, 0, file_names[i])
+            sheet.write(num_row, 1, str(np.uint8(predicted_classes[i][0] * 100)))
+            sheet.write(num_row, 2, str(np.uint8(predicted_classes[i][1] * 100)))
+            sheet.write(num_row, 3, str(np.uint8(predicted_classes[i][2] * 100)))
+            sheet.write(num_row, 4, str(np.uint8(predicted_classes[i][3] * 100)))
+            sheet.write(num_row, 5, str(np.uint8(predicted_classes[i][4] * 100)))
+            sheet.write(num_row, 6, str(np.uint8(predicted_classes[i][5] * 100)))
+            sheet.write(num_row, 7, str(np.uint8(predicted_classes[i][6] * 100)))
+            sheet.write(num_row, 8, classes_list[np.uint8(predicted_classes_digits[i])])
+            sheet.write(num_row, 9, classes_list[np.uint8(true_classes[i])])
+
+            num_row += 1
+
+        wb.save("ViT-prediction.xls")
+
+
+
+
+

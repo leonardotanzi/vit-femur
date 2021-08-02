@@ -7,6 +7,7 @@ import random
 from sklearn.model_selection import KFold
 from tqdm import tqdm
 from scipy import stats
+import xlrd
 
 
 def from7to3classes(y):
@@ -190,29 +191,70 @@ def mean_confidence_interval(data, confidence=0.95):
     return m, m-h, m+h
 
 
+def read_excel(loc):
+
+    wb = xlrd.open_workbook(loc)
+    sheet = wb.sheet_by_index(0)
+
+    sheet.cell_value(0, 0)
+
+    correct = [0 for i in range(65)]
+    for i in range(1, sheet.nrows):
+        a = sheet.row_values(i)
+        k = 0
+        for j in range(7, sheet.ncols, 3):
+            if a[j+1] == 1:
+                correct[j-7-2*k] = a[j]
+            k += 1
+    correct[9] = "A1"
+
+    sheet.cell_value(0, 0)
+
+    total_spec = []
+    for i in range(1, sheet.nrows):
+        a = sheet.row_values(i)
+        k = 0
+        tot = 0
+        for j in range(7, sheet.ncols, 3):
+            x = a[j][0:1]
+            if a[j][0:1] == correct[k][0:1]:
+                tot += 1
+            k += 1
+        total_spec.append(tot)
+
+    arr = np.uint8(np.asarray(total_spec) * 100 / 65)
+    return arr
+
+    pass
+
+
 if __name__=="__main__":
-   #
-   # a = [0.53, 0.43, 0.60, 0.61, 0.45, 0.19, 0.89]
-   # a = [0.42, 0.65, 0.65, 0.59, 0.43, 0.43, 0.85]
-   # a= [0.53, 0.43,0.60,0.61,0.45,0.19,0.89]
-   # a = [0.47,0.51,0.63,0.60,0.44,0.26,0.87]
 
-   # a = [0.51,0.21,0.32,0.70,0.20,0.06,0.88]
-   #    # a = [0.36, 0.50,0.20,0.51,0.59,0.11,0.87]
-   #    # a = [0.51, 0.21, 0.32, 0.70, 0.20, 0.06, 0.88]
-   #    # a = [0.42, 0.30, 0.24, 0.59, 0.30, 0.08, 0.87]
+    nocad = read_excel("AO_OTA classification of hip fractures.xls")
+    cad = read_excel("AO_OTA classification of hip fracturesCAD.xls")
 
-   a = [0.66, 0.66, 0.92, 0.93, 0.69, 0.56, 0.94]
-   w = [91, 94, 25, 90, 49, 16, 285]
-   w = w / np.sum(np.asarray(w)) * np.asarray(a)
-   y = np.sum(np.asarray(a) * np.asarray(w)) / np.sum(np.asarray(w))
-   np.average(a, weights=w)
-   print(mean_confidence_interval(w))
-   # a = [0.66, 0.77, 0.92, 0.74, 0.79, 0.56, 0.95]
-   # a = [0.66, 0.66, 0.92, 0.93, 0.69, 0.56, 0.94]
-   # a = [0.66, 0.71, 0.92, 0.82, 0.74, 0.56, 0.95]
+    for i in range(len(nocad)):
+        print("Specialist {}: accuracy without CAD {}%, with CAD {}%, improvement of {}%".format(i + 1, nocad[i], cad[i], int(cad[i]) - int(nocad[i])))
 
-   # a = np.asarray(a)
-   # print(np.mean(a))
-   # print(mean_confidence_interval(a))
+    print(nocad)
+    print(cad)
+    print(mean_confidence_interval(nocad))
+    print(mean_confidence_interval(cad))
+
+    a = [35, 34, 45, 31, 35, 43, 34, 19, 10, 20, 13]
+    print(mean_confidence_interval(a))
+
+    b = [19, 10, 20, 13]
+    print(mean_confidence_interval(b))
+
+    a = [0.66, 0.66, 0.92, 0.93, 0.69, 0.56, 0.94]
+    w = [91, 94, 25, 90, 49, 16, 285]
+    w = w / np.sum(np.asarray(w)) * np.asarray(a)
+    y = np.sum(np.asarray(a) * np.asarray(w)) / np.sum(np.asarray(w))
+    np.average(a, weights=w)
+    print(mean_confidence_interval(w))
+
+    # a = np.asarray(a)
+    # print(np.mean(a))
+    # print(mean_confidence_interval(a))
 
