@@ -1,7 +1,4 @@
-import tensorflow as tf
-import numpy as np
 import tensorflow_addons as tfa
-# from tensorflow.keras.applications.resnet50 import ResNet50, preprocess_input
 from tensorflow.keras.applications.inception_v3 import InceptionV3, preprocess_input
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix, classification_report

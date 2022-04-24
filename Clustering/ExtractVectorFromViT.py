@@ -1,4 +1,3 @@
-import tensorflow_model_optimization as tfmot
 from tensorflow.keras.models import load_model, Model
 from vit_keras import vit
 import tensorflow as tf
@@ -36,12 +35,6 @@ if __name__ == "__main__":
         tf.keras.layers.BatchNormalization(),
         tf.keras.layers.Dropout(0.5),
         tf.keras.layers.Dense(len(classes_list), 'softmax')
-        # vit_model,
-        # tf.keras.layers.Flatten(),
-        # tf.keras.layers.BatchNormalization(),
-        # tf.keras.layers.Dense(11, activation=tf.nn.gelu),
-        # tf.keras.layers.BatchNormalization(),
-        # tf.keras.layers.Dense(len(classes_list), 'softmax')
     ],
         name='vision_transformer')
 

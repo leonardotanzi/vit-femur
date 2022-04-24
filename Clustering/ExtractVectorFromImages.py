@@ -1,5 +1,3 @@
-from tensorflow.keras.applications.resnet50 import ResNet50, preprocess_input
-from tensorflow.keras.models import Sequential, load_model, Model
 from utils import *
 
 if __name__ == "__main__":

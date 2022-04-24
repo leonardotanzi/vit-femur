@@ -4,15 +4,14 @@ from tensorflow.keras.layers import Layer, InputSpec
 from tensorflow.keras.layers import Dense, Input, Conv2D, MaxPooling2D, UpSampling2D, Flatten, Reshape
 from tensorflow.keras.models import Model, load_model
 from tensorflow.keras.optimizers import SGD
-from tensorflow.keras import callbacks
 from tensorflow.keras.initializers import VarianceScaling
 from sklearn.cluster import KMeans
 from sklearn.metrics import normalized_mutual_info_score as nmi, adjusted_rand_score as ari
 from scipy.optimize import linear_sum_assignment as linear_assignment
-from sklearn.metrics import confusion_matrix, classification_report
+from sklearn.metrics import confusion_matrix
 import seaborn as sns
 import matplotlib.pyplot as plt
-import tensorflow as tf
+
 
 def acc_cluster(y_true, y_pred):
     """

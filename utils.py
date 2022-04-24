@@ -10,6 +10,86 @@ from scipy import stats
 import xlrd
 
 
+class WarmupExponentialDecay(Callback):
+
+    def __init__(self, lr_base=1e4, lr_min=1e6, decay=0.00002, warmup_epochs=2):
+        self.num_passed_batchs = 0   #One counter
+        self.warmup_epochs = warmup_epochs
+        self.lr = lr_base #learning_rate_base
+        self.lr_min = lr_min #Minimum initial learning rate, this code has not yet been implemented
+        self.decay = decay  #Exponential decay rate
+        self.steps_per_epoch = 0 #Also a counter
+
+    def on_batch_begin(self, batch, logs=None):
+        # params are some parameters that the model automatically passes to Callback
+        if self.steps_per_epoch == 0:
+            if self.params['steps'] is None:
+                self.steps_per_epoch = np.ceil(1. * self.params['samples'] / self.params['batch_size'])
+            else:
+                self.steps_per_epoch = self.params['steps']
+        # se siamo nel warm up
+        if self.num_passed_batchs < self.steps_per_epoch * self.warmup_epochs:
+            K.set_value(self.model.optimizer.lr, 0.01)
+        else:
+            K.set_value(self.model.optimizer.lr,
+                        self.lr*((1-self.decay)**(self.num_passed_batchs-self.steps_per_epoch*self.warmup_epochs)))
+        self.num_passed_batchs += 1
+
+    def on_epoch_begin(self, epoch, logs=None):
+        print("learning_rate: {:.9f}".format(K.get_value(self.model.optimizer.lr)))
+
+
+def data_augment(image):
+    p_spatial = tf.random.uniform([], 0, 1.0, dtype=tf.float32)
+    p_rotate = tf.random.uniform([], 0, 1.0, dtype=tf.float32)
+    p_pixel_1 = tf.random.uniform([], 0, 1.0, dtype=tf.float32)
+    p_pixel_2 = tf.random.uniform([], 0, 1.0, dtype=tf.float32)
+    p_pixel_3 = tf.random.uniform([], 0, 1.0, dtype=tf.float32)
+
+    # Flips
+    image = tf.image.random_flip_left_right(image)
+    image = tf.image.random_flip_up_down(image)
+
+    if p_spatial > .75:
+        image = tf.image.transpose(image)
+
+    # Rotates
+    if p_rotate > .75:
+        image = tf.image.rot90(image, k=3)  # rotate 270º
+    elif p_rotate > .5:
+        image = tf.image.rot90(image, k=2)  # rotate 180º
+    elif p_rotate > .25:
+        image = tf.image.rot90(image, k=1)  # rotate 90º
+
+    # Pixel-level transforms
+    if p_pixel_1 >= .4:
+        image = tf.image.random_saturation(image, lower=.7, upper=1.3)
+    if p_pixel_2 >= .4:
+        image = tf.image.random_contrast(image, lower=.8, upper=1.2)
+    if p_pixel_3 >= .4:
+        image = tf.image.random_brightness(image, max_delta=.1)
+
+    return image
+
+
+def compute_weights(input_folder):
+    dictio = {"A1": 0, "A2": 1, "A3": 2, "B1": 3, "B2": 4, "B3": 5, "Unbroken": 6}
+    files_per_class = []
+    for folder in os.listdir(input_folder):
+        if folder.startswith('.'):
+            continue
+        if folder in ["A", "B"]:
+            continue
+        if not os.path.isfile(folder):
+            a = dictio.get(folder)
+            files_per_class.insert(dictio.get(folder), (len(os.listdir(input_folder + '/' + folder))))
+    total_files = sum(files_per_class)
+    class_weights = {}
+    for i in range(len(files_per_class)):
+        class_weights[i] = 1 - (float(files_per_class[i]) / total_files)
+    return class_weights
+
+
 def from7to3classes(y):
     for i in range(len(y)):
         if y[i] == 1 or y[i] == 2:
@@ -28,7 +108,6 @@ def from7to2classes(y):
         elif y[i] == 6:
             y[i] = 1
     return y
-
 
 
 def build_dataset(train_path, classes_list):
@@ -61,7 +140,7 @@ def build_dataset(train_path, classes_list):
     np.savez_compressed("..\\NumpyData\\y_test_images.npz", y)
 
 
-def k_fold(K=7):
+def k_fold(K):
     image_size = 224
     # categories = ["A1", "A2", "A3", "B1", "B2", "B3", "Unbroken"]
     #path = "D:\\Drive\\PelvisDicom\\FinalDataset\\"
@@ -125,27 +204,6 @@ def k_fold(K=7):
             for i in test_index:
                 cv2.imwrite(output_path + "/Fold{}/Test/{}/{}".format(nFold, categories[enum], names[i]), X_original[i])
             nFold += 1
-
-
-def data_augment(image):
-    p_spatial = tf.random.uniform([], 0, 1.0, dtype=tf.float32)
-    p_rotate = tf.random.uniform([], 0, 1.0, dtype=tf.float32)
-
-    image = tf.image.random_flip_left_right(image)
-    image = tf.image.random_flip_up_down(image)
-
-    if p_spatial > .75:
-        image = tf.image.transpose(image)
-
-    # Rotates
-    if p_rotate > .75:
-        image = tf.image.rot90(image, k=3)  # rotate 270º
-    elif p_rotate > .5:
-        image = tf.image.rot90(image, k=2)  # rotate 180º
-    elif p_rotate > .25:
-        image = tf.image.rot90(image, k=1)  # rotate 90º
-
-    return image
 
 
 def create_data(input_dir, img_height, img_width, classes_list):
@@ -224,37 +282,4 @@ def read_excel(loc):
 
     arr = np.uint8(np.asarray(total_spec) * 100 / 65)
     return arr
-
-    pass
-
-
-if __name__=="__main__":
-
-    nocad = read_excel("AO_OTA classification of hip fractures.xls")
-    cad = read_excel("AO_OTA classification of hip fracturesCAD.xls")
-
-    for i in range(len(nocad)):
-        print("Specialist {}: accuracy without CAD {}%, with CAD {}%, improvement of {}%".format(i + 1, nocad[i], cad[i], int(cad[i]) - int(nocad[i])))
-
-    print(nocad)
-    print(cad)
-    print(mean_confidence_interval(nocad))
-    print(mean_confidence_interval(cad))
-
-    a = [35, 34, 45, 31, 35, 43, 34, 19, 10, 20, 13]
-    print(mean_confidence_interval(a))
-
-    b = [19, 10, 20, 13]
-    print(mean_confidence_interval(b))
-
-    a = [0.66, 0.66, 0.92, 0.93, 0.69, 0.56, 0.94]
-    w = [91, 94, 25, 90, 49, 16, 285]
-    w = w / np.sum(np.asarray(w)) * np.asarray(a)
-    y = np.sum(np.asarray(a) * np.asarray(w)) / np.sum(np.asarray(w))
-    np.average(a, weights=w)
-    print(mean_confidence_interval(w))
-
-    # a = np.asarray(a)
-    # print(np.mean(a))
-    # print(mean_confidence_interval(a))
 

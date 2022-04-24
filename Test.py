@@ -1,19 +1,11 @@
-import pandas as pd
-import numpy as np
-import tensorflow as tf
 import tensorflow_addons as tfa
-import glob, warnings
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix, classification_report
 import seaborn as sns
 from vit_keras import vit
 from vit_keras import visualize
 from utils import *
-from tensorflow.keras.callbacks import Callback
-import tensorflow.keras.backend as K
-import xlwt
 from xlwt import Workbook
-import xlrd
 
 
 if __name__ == "__main__":
